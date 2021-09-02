@@ -1,0 +1,118 @@
+﻿
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Le Huy Duc - Excell On</title>
+    <!-- Favicon -->
+    <link rel="icon" href="~/Areas/Admin/Public/img/brand/favicon.png" type="image/png">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+    <!-- Icons -->
+    <link rel="stylesheet" href="~/Areas/Admin/Public/vendor/nucleo/css/nucleo.css" type="text/css">
+    <link rel="stylesheet" href="~/Areas/Admin/Public/vendor/fortawesome/fontawesome-free/css/all.min.css" type="text/css">
+    <!-- Page plugins -->
+    <!-- Argon CSS -->
+    <link href="~/Areas/Admin/Public/css/argon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="~/Areas/Admin/Public/css/onTop.css" rel="stylesheet" />
+    @RenderSection("css", false)
+</head>
+
+<body>
+    <!-- Sidenav -->
+    @RenderPage("_SidenavLayout.cshtml")
+    <!-- Main content -->
+    <div class="main-content" id="ducdz">
+        @RenderPage("_TopnavLayout.cshtml")
+        
+        @RenderBody()
+
+        <footer class="footer pt-0" style="padding:50px 50px 30px 50px;margin-top: 50px">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6">
+                    <div class="copyright text-center  text-lg-left  text-muted">
+                        &copy; 2021 <a style="color: blueviolet">Excell On Team</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                        <li class="nav-item">
+                            <a class="nav-link" >Excell On Team</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" >About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" >Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" >MIT License</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Argon Scripts -->
+    <!-- Core -->
+
+
+    <script src="~/Areas/Admin/Public/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="~/Areas/Admin/Public/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Areas/Admin/Public/vendor/js-cookie/js.cookie.js"></script>
+    <script src="~/Areas/Admin/Public/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="~/Areas/Admin/Public/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
+    <!-- Optional JS -->
+    <script src="~/Areas/Admin/Public/vendor/chart.js/dist/Chart.min.js"></script>
+    <script src="~/Areas/Admin/Public/vendor/chart.js/dist/Chart.extension.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Argon JS -->
+    <script src="~/Areas/Admin/Public/js/argon.js?v=1.2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var page = location.pathname.split('/').pop();
+            $(".nav-link").each(function () {
+                $(this).removeClass("active");
+            });
+            $('.' + page).addClass("active");
+        });
+
+        function _Redirect(url) {
+            $(location).attr("href",url);
+        }
+
+        function _HideShowNav() {
+            $('.sidenav').toggle("fast", function () {
+                if ($('.sidenav').is(":visible") == false) {
+                    $('#ducdz').css("margin-left", 0);
+                    $('.sidenav-toggler-line').css("background-color", "blue");
+                } else {
+                    $('#ducdz').css("margin-left", 250);
+                    $('.sidenav-toggler-line').css("background-color", "brown");
+                }
+            });
+
+        }
+
+        window.onscroll = function () { scrollFunction() };
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("btn_top").style.display = "block";
+            } else {
+                document.getElementById("btn_top").style.display = "none";
+            }
+
+        }
+        function topFunction() {
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+        }
+    </script>
+    @RenderSection("js", false)
+</body>
+
+</html>

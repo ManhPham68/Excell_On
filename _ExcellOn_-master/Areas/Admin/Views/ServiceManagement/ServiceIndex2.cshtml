@@ -1,0 +1,337 @@
+﻿@model List<_ExcellOn_.Models.Service>
+@{ Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";}
+<div class="container" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+    <div class="header-body">
+        <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+                <h6 class="h2 d-inline-block mb-0">Service Management</h6>
+                <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                    <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+                        <li class="breadcrumb-item"><a href="#">Click in Icon to view</a></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-lg-6 col-5 text-right">
+                <a class="btn btn-sm btn-neutral" href="/Admin/ServiceManagement/ServiceIndex2">Reload</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 30px;padding-bottom: 80px">
+    <div class="row">
+        <div class="col-xl-12">
+            @if (Model != null)
+            {
+
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4">
+                            <aside class="profile-card">
+                                <header>
+                                    <!-- here’s the avatar -->
+                                    <a href="#" onclick="return _GetOrderDetail(@item.Id)">
+                                        <img src="~/Public/Image/ava.gif" />
+                                    </a>
+                                    <!-- the username -->
+                                    <h1>@item.Service_Name</h1>
+                                    <!-- and role or location -->
+                                    <h2 style="color:white!important">We have @item.OrderDetails.Count OrderDetail</h2>
+                                </header>
+
+                                <!-- bit of a bio; who are you? -->
+                                <div class="profile-bio">
+                                    <p class="description">
+                                        Click me to view my Order Detail
+                                    </p>
+                                </div>
+                                
+                            </aside>
+                        </div>
+                    }
+                </div>
+
+                foreach (var item in Model)
+                {
+                    if (item.Service_Name == "In-bound")
+                    {
+                        <style>
+                            #table_Service_@item.Id td {
+                                background-color: #172b4d;
+                            }
+                        </style>
+                        <p style="margin-top: 80px;background-color:#172b4d;color:white" id="@item.Id" class="alert">@item.Service_Name</p>
+                        <div class="row table_row" id="table_row_@item.Id" style="margin-top: 30px;">
+                            <div class="table-responsive">
+                                <table id="table_Service_@item.Id" class="cell-border text-center align-items-center table-dark table-flush ">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th style="font-size: 0.875rem">Code</th>
+                                            <th style="font-size: 0.875rem">Date Start</th>
+                                            <th style="font-size: 0.875rem">Date End</th>
+                                            <th style="font-size: 0.875rem">Status</th>
+                                            <th style="font-size: 0.875rem">Number of Staff</th>
+
+                                            <th style="font-size: 0.875rem"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list" style="color: white">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    else if (item.Service_Name == "Out-bound")
+                    {
+                        <style>
+                            #table_Service_@item.Id td {
+                                background-color: darkseagreen;
+                            }
+                        </style>
+                        <p style="margin-top: 80px;background-color:darkseagreen;color:white" id="@item.Id" class="alert">@item.Service_Name</p>
+                        <div class="row table_row" id="table_row_@item.Id" style="margin-top: 30px;">
+                            <div class="table-responsive">
+                                <table id="table_Service_@item.Id" class="cell-border text-center align-items-center table-flush ">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 0.875rem">Code</th>
+                                            <th style="font-size: 0.875rem">Date Start</th>
+                                            <th style="font-size: 0.875rem">Date End</th>
+                                            <th style="font-size: 0.875rem">Status</th>
+                                            <th style="font-size: 0.875rem">Number of Staff</th>
+
+                                            <th style="font-size: 0.875rem"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list" style="color: white">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    else if (item.Service_Name == "Tele Marketing")
+                    {
+                        <style>
+                            #table_Service_@item.Id td {
+                                color: midnightblue;
+                                background-color: lemonchiffon;
+                            }
+                        </style>
+                        <p style="margin-top: 80px;background-color: lemonchiffon;color:black" id="@item.Id" class="alert">@item.Service_Name</p>
+                        <div class="row table_row" id="table_row_@item.Id" style="margin-top: 30px;">
+                            <div class="table-responsive">
+                                <table id="table_Service_@item.Id" class="cell-border text-center align-items-center table-flush ">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 0.875rem">Code</th>
+                                            <th style="font-size: 0.875rem">Date Start</th>
+                                            <th style="font-size: 0.875rem">Date End</th>
+                                            <th style="font-size: 0.875rem">Status</th>
+                                            <th style="font-size: 0.875rem">Number of Staff</th>
+                                            <th style="font-size: 0.875rem"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list" style="color: white">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <style>
+                            #table_Service_@item.Id td {
+                                background-color: lemonchiffon;
+                            }
+                        </style>
+                        <p style="margin-top: 80px;background-color:lemonchiffon;color:black" id="@item.Id" class="alert">@item.Service_Name</p>
+                        <div class="row table_row" id="table_row_@item.Id" style="margin-top: 30px;">
+                            <div class="table-responsive">
+                                <table id="table_Service_@item.Id" class="cell-border text-center align-items-center table-flush ">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 0.875rem">Code</th>
+                                            <th style="font-size: 0.875rem">Date Start</th>
+                                            <th style="font-size: 0.875rem">Date End</th>
+                                            <th style="font-size: 0.875rem">Status</th>
+                                            <th style="font-size: 0.875rem">Number of Staff</th>
+                                            <th style="font-size: 0.875rem"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list" style="color: white">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+
+    </div>
+
+</div>
+
+<button onclick="topFunction()" style="position: sticky;bottom: 20px;z-index: 99;font-size: 18px;background-color:transparent;border: none;outline: none;border-radius: 4px;" id="btn_top" title="Go to top">
+    <img src="~/Public/Image/up-arrow (1).png" width="40" height="40" />
+</button>
+
+
+@section css{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+    <link href="~/Areas/Admin/Public/DataTable/pagination.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/Public/css/loader.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/Public/JdLomX/css/avzv.css" rel="stylesheet" />
+}
+@section js{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    
+    @foreach (var item in Model)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $.ajax({
+                    url: "/Admin/ServiceManagement/GetOrderDetail?Service_ID=" + @item.Id,
+                    contentType: "application/json;charset=utf-8",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (result) {
+                        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                                        ];
+                        $('#table_Service_' + @item.Id).DataTable({
+                            "lengthMenu": [10, 15, 20, 30],
+                            "pagingType": "full_numbers",
+                            "scrollY": true,
+                            language: {
+                                paginate: {
+                                    next: '<i class="fa fa-fw fa-long-arrow-right">',
+                                    previous: '<i class="fa fa-fw fa-long-arrow-left">'
+                                }
+                            },
+                            data: result,
+                            columns: [
+                                { 'data': 'Id' },
+                                {
+                                    'data': 'OrderDetail_DateStart',
+                                    'render': function (OrderDetail_DateStart) {
+                                        var date = new Date(parseInt(OrderDetail_DateStart.substr(6)));
+                                        var month = date.getMonth();
+                                        
+                                        return date.getDate() + "/" + monthNames[month] + "/" + date.getFullYear();
+                                    }
+                                },
+                                {
+                                    'data': 'OrderDetail_DateEnd',
+                                    'render': function (OrderDetail_DateEnd) {
+                                        var date = new Date(parseInt(OrderDetail_DateEnd.substr(6)));
+                                        var month = date.getMonth();
+                                        return date.getDate() + "/" + monthNames[month] + "/" + date.getFullYear();
+                                    }
+                                },
+                                {
+                                    'data': 'OrderDetail_Status',
+                                    'render': function (OrderDetail_Status) {
+                                        if (OrderDetail_Status == 0) {
+                                            return '<span class="badge badge-dot mr-4"><i class="bg-warning"></i><span class="status">Pending</span></span>';
+                                        } else if (OrderDetail_Status == 1) {
+                                            return '<span class="badge badge-dot mr-4"><i class="bg-info"></i><span class="status">Started</span></span>';
+                                        } else if (OrderDetail_Status == 2) {
+                                            return '<span class="badge badge-dot mr-4"><i class="bg-gradient-orange"></i><span class="status">Completed</span></span>';
+                                        } else {
+                                            return '<span class="badge badge-dot mr-4"><i class="bg-yellow"></i><span class="status">Deleted</span></span>';
+                                        }
+                                    }
+                                },
+                                { 'data': 'OrderDetail_NumberOfPeople' },
+                                {
+                                    'data' : 'Id',
+                                    'render': function (Id) {
+                                        return '<a class="btn btn-info" style="font-size: 10px" onclick= "return _Reset(' + Id + ')"> Reset </a>' +
+                                            '<a class="btn btn-success" style="font-size: 10px" onclick= "return _Activate(' + Id + ')"> Activate </a>' +
+                                            '<a class="btn btn-primary" style="font-size: 10px" onclick= "return _Complete(' + Id + ')"> Complete </a>' +
+                                            '<a class="btn" href="/Admin/ServiceManagement/Assign_Staff/' + Id + '"style="background-color: #e6eef1;font-size: 10px"> Assign </a>';
+                                    }
+                                }
+                            ]
+
+                        });
+                    },
+                    error: function (erro) {
+                    }
+                });
+            });
+        </script>
+    }
+
+    <script type="text/javascript">
+        window.onscroll = function () { scrollFunction() };
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("btn_top").style.display = "block";
+            } else {
+                document.getElementById("btn_top").style.display = "none";
+            }
+
+        }
+        function topFunction() {
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+        }
+        function _GetOrderDetail(Service_ID) {
+            $('.table_row').each(function () {
+                $(this).hide();
+            });
+            $('.alert').each(function () {
+                $(this).hide();
+            });
+            $('#' + Service_ID).show();
+            $('#table_row_' + Service_ID).show();
+        };
+        function _Activate(Id) {
+            $.ajax({
+                url: "/Admin/ServiceManagement/Activate?ord_id=" + Id,
+                contentType: "application/json;charset=utf-8",
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    alert("Activate Succesfull. Please reload to update status");
+                },
+                error: function () {
+                    alert("Unsuccessfully !");
+                }
+            });
+        }
+        function _Complete(Id) {
+            $.ajax({
+                url: "/Admin/ServiceManagement/Complete?ord_id=" + Id,
+                contentType: "application/json;charset=utf-8",
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    alert("Complete Succesfull. Please reload to update status");
+                },
+                error: function () {
+                    alert("Unsuccessfully !");
+                }
+            });
+        }
+        function _Reset(Id) {
+            $.ajax({
+                url: "/Admin/ServiceManagement/Reset?ord_id=" + Id,
+                contentType: "application/json;charset=utf-8",
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    alert("Reset Succesfull. Please reload to update status");
+                },
+                error: function () {
+                    alert("Unsuccessfully !");
+                }
+            });
+        }
+    </script>
+
+}

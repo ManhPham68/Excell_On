@@ -1,0 +1,135 @@
+﻿@using _ExcellOn_.Models
+@model List<_ExcellOn_.Models.Order>
+@{
+    ViewBag.Title = "OrderListIndex";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+@section css{
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+    <link href="~/Areas/Admin/Public/DataTable/pagination.css" rel="stylesheet" />
+}
+
+<div class="inner-banner">
+    <section class="w3l-breadcrumb">
+        <div class="container">
+            <h4 class="inner-text-title font-weight-bold text-white mb-sm-3 mb-2">My Order</h4>
+            <ul class="breadcrumbs-custom-path">
+                <li><a href="/">Home</a></li>
+                <li class="active"><span class="fa fa-chevron-right mx-2" aria-hidden="true"></span> My Order</li>
+            </ul>
+        </div>
+    </section>
+</div>
+
+
+<div class="container-xl" style="margin-top: 80px;margin-bottom: 80px">
+    <div class="card">
+        <div class="card-header bg-info pt-2 pb-2">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3 style="color:white;margin-bottom:0px;padding: 8px;font-weight: bold">
+                        Order List
+                    </h3>
+                </div>
+                <div class="col-md-9">
+                    <a href="/Customer2/OrderListIndex" style="float: right;border-radius: 6px;border: 1px white solid" class="btn-style-white">
+                        <span>
+                            <i class="fa fa-spin" style="margin-right: 10px">&#xE863;</i>
+                            <span> Refresh </span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="table_OrderList" class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th style="font-size: 0.875rem">Order Code</th>
+                                <th style="font-size: 0.875rem">Date Create</th>
+                                <th style="font-size: 0.875rem">Description</th>
+                                <th style="font-size: 0.875rem">Total Cost</th>
+                                <th style="font-size: 0.875rem">Status</th>
+                                <th style="font-size: 0.875rem">Detail</th>
+                        </thead>
+
+                        <tbody class="list">
+                            @foreach (var item in Model)
+                            {
+                                <tr style="height: 60px">
+                                    <td>@item.Id</td>
+                                    <td>@item.Order_DateCreate</td>
+                                    <td>@item.Order_Description</td>
+                                    <td>$ @item.Order_TotalCost</td>
+                                    <td style="font-size: 1rem;">
+                                        @*<span class="status text-success">&bull;</span>@item.OrderDetail_Status*@
+                                        @if (item.Order_Status == 0)
+                                        {
+
+                                            <i class="fa fa-circle" style="color: blueviolet;margin-right: 8px;font-size:0.6rem"></i>
+                                            <span> Pending </span>
+                                        }
+                                        else if (item.Order_Status == 1)
+                                        {
+                                            <i class="fa fa-circle" style="color: orangered;margin-right: 8px;font-size:0.6rem"></i>
+                                            <span> Started </span>
+                                        }
+                                        else if (item.Order_Status == 2)
+                                        {
+
+                                            <i class="fa fa-circle" style="color: chartreuse;margin-right: 8px;font-size:0.6rem"></i>
+                                            <span> Completed </span>
+                                        }
+                                        else
+                                        {
+
+                                            <i class="fa fa-circle" style="color: black;margin-right: 8px;font-size:0.6rem"></i>
+                                            <span> Deleted </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("OrderDetailIndex","Customer2", new { id = item.Id })" class="view" title="View Details" data-toggle="tooltip">
+                                            <i class="material-icons">&#xE5C8;</i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section js{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table_OrderList').DataTable({
+                "lengthMenu": [10, 15, 20, 30],
+                "pagingType": "full_numbers",
+                language: {
+                    paginate: {
+                        next: '<i class="fa fa-fw fa-long-arrow-right">',
+                        previous: '<i class="fa fa-fw fa-long-arrow-left">'
+                    }
+                },
+                order: [[0, 'desc']]
+
+            });
+        });
+        /*< !--Hiển thị chữ view detail trên button mũi tên-- >*/
+        $('[data-toggle="tooltip"]').tooltip();
+    </script>
+}
+
+

@@ -1,0 +1,186 @@
+﻿@{ List<string> list_permission = (List<string>)Session["ListPermission"];
+    List<string> list_role = (List<string>)Session["ListRole"]; }
+
+@model _ExcellOn_.Models.OrderDetail
+@using _ExcellOn_.Models
+@{ List<Staff> list_staff_this_ord = ViewBag.list_staff_this_ord;
+    List<Staff> list_staff_append = ViewBag.list_staff_append;
+    if (list_staff_append != null)
+    {
+        int list_staff_was_append_count = list_staff_append.Count;
+    } }
+@{ Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";}
+@* dùng cho phân trang ajax
+    foreach (var item in list_id_staff_ord)
+        {
+    <input class="list_staff_ord" style="display:none" readonly value="@item.Staff_Id" />
+    } }*@
+
+<div class="container" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+    <div class="header-body">
+        <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+                <h6 class="h2 d-inline-block mb-0">Staff Assignment</h6>
+                <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                    <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+                        <li class="breadcrumb-item"><a href="#">Board</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 30px;padding-bottom: 40px">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="container">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-3 mr-auto">
+                                <label>
+                                    <input type="checkbox" id="checkall" /> Select <span class="Count_Check"></span>
+                                </label>
+                            </div>
+                            <div class="col-5 ml-auto">
+                                <input class="form-control" onkeyup="return _search()" id="key_search" placeholder="Search" style="height: 80%;margin-top: 3px" type="text" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="select">
+                                    @foreach (var item in list_staff_this_ord)
+                                    {<label class="select__item">
+                                            <input onclick="return _CountChecked()" type="checkbox" checked value="@item.Id" class="checkitem">
+                                            <span class="circle-image">
+                                                <img src="@item.Staff_Avatar" />
+                                            </span>
+                                            <span style="margin-left: 10px" class="info_staff">
+                                                @item.Staff_FullName
+                                                @if (item.Staff_Status == 0)
+                                                {<span style="margin-left:10px" class="badge badge-dot">
+                                                        <i class="bg-warning"></i>
+                                                        <span>Training</span>
+                                                    </span>
+                                                                        <span> - Project (@item.Staff_OrderDetail.Count)</span> }
+                                                                                        else
+                                                                                        {<span style="margin-left:10px" class="badge badge-dot">
+                                                                                                <i class="bg-info"></i>
+                                                                                                <span>Pro</span>
+                                                                                            </span>
+                                                                                                                <span> - Project (@item.Staff_OrderDetail.Count)</span>}
+
+                                            </span>
+                                        </label>}
+                                    @if (list_staff_append != null)
+                                    {
+                                        foreach (var item in list_staff_append)
+                                        {
+                        <label class="select__item">
+                            <input onclick="return _CountChecked()" type="checkbox" value="@item.Id" class="checkitem">
+                            <span class="circle-image">
+                                <img src="@item.Staff_Avatar" />
+                            </span>
+                            <span style="margin-left: 10px" class="info_staff">
+                                @item.Staff_FullName
+                                @if (item.Staff_Status == 0)
+                                {<span style="margin-left:10px" class="badge badge-dot">
+                                        <i class="bg-warning"></i>
+                                        <span>Training</span>
+                                    </span>
+                                                            <span> - Project (@item.Staff_OrderDetail.Count)</span> }
+                                                                                else
+                                                                                {<span style="margin-left:10px" class="badge badge-dot">
+                                                                                        <i class="bg-info"></i>
+                                                                                        <span>Pro</span>
+                                                                                    </span>
+                                                                                                            <span> - Project (@item.Staff_OrderDetail.Count)</span>}
+                            </span>
+                        </label>}
+                }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="ml-auto" style="padding:15px">
+                                <button onclick="return _LoadMore()" class="ml- auto btn btn-info loadmore"> Load more </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mr-auto" style="padding:15px">
+                                <button class="btn btn-default" onclick="return _Close()">Close</button>
+                                <button type="button" onclick="return _SubmitAssignment()" class="btn btn-success">Submit</button>
+                            </div>
+                        </div>
+
+
+                        @*<div class="col-md-6">
+                                <ul id="pages">
+                                    <li class="pageInfo">Page 1 of 3</li>
+                                    <li class="goPrevious btn" onclick="return _goPrevious()">&lsaquo;&lsaquo; Previous</li>
+                                    <li>
+                                        <input onkeyup="return _Indicate()" style="background:none;border:none" class="currentPage" id="current_textbox" />
+                                    </li>
+                                    <li style="margin-left:12px" class="goNext btn" onclick="return _goNext()">Next &rsaquo;&rsaquo;</li>
+                                </ul>
+                            </div>*@
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div style="padding: 20px">
+    <input type="number" value="@Model.Id" style="display:none" id="ord_id" />
+    <input type="number" value="@Model.OrderDetail_NumberOfPeople" style="display:none" id="number_of_employee" />
+    <input type="number" style="display:none" id="total_page" />
+    @*<input type="number" style="display:none" value="1" id="current_page" />*@
+
+    @if (list_staff_append != null)
+    {
+<input type="number" style="display:none" value="@list_staff_append.Count" id="list_staff_was_append_count" /> }
+            else
+            {
+<input type="number" style="display:none" value="0" id="list_staff_was_append_count" />}
+
+
+</div>
+<button onclick="topFunction()" style="background-color: transparent" id="btn_top" title="Go to top">
+    <img src="~/Public/Image/up-arrow (1).png" width="50" height="50" />
+</button>
+
+@section css{
+    <link href="~/Areas/Admin/Public/Plugin_Table_HD/css/paging.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/Public/css/panel.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/Public/css/choose_staff.css" rel="stylesheet" />
+}
+
+@section js{
+    <script src="~/Areas/Admin/Script_HuyDuc/Service/Assign_Staff.js"></script>
+    <script type="text/javascript">
+        $("#checkall").change(function () {
+            $(".checkitem").prop("checked", $(this).prop("checked"));
+            var input_checked = $('input[type="checkbox"][class="checkitem"]:checked');
+            $('.Count_Check').text("(" + input_checked.length + ")");
+        })
+        $(".checkitem").change(function () {
+            if ($(this).prop("checked") == false) {
+                $("#checkall").prop("checked", false)
+            }
+            if ($(".checkitem:checked").length == $(".checkitem").length) {
+                $("#checkall").prop("checked", true)
+            }
+        })
+    </script>
+}

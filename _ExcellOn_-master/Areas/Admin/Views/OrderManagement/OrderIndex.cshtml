@@ -1,0 +1,484 @@
+﻿
+@{Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";}
+
+@using _ExcellOn_.Areas.Admin.ViewModel
+@using _ExcellOn_.Models
+
+@{
+    List<string> list_permission = (List<string>)Session["ListPermission"];
+    List<string> list_role = (List<string>)Session["ListRole"];
+    List<Order_OrderDetail> list_order_orderdetail = ViewBag.list_order_orderdetail;
+    List<int> List_Order_Status_Id = ViewBag.List_Order_Status_Id;
+}
+<div class="container" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+    <div class="header-body">
+        <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+                <h6 class="h2 d-inline-block mb-0">Order Management</h6>
+                <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                    <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+                        <li class="breadcrumb-item"><a href="#">List</a></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-lg-6 col-5 text-right">
+                <a class="btn btn-sm btn-neutral" href="/Admin/OrderManagement/OrderIndex">Reload</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    @if (list_order_orderdetail != null)
+    {
+        <div class="panel panel-primary" style="margin-top: 20px">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-12">
+                        <form class="row" method="post" action="/Admin/OrderManagement/Filter">
+                            <div class="col-5">
+
+                                <label>Service</label>
+                                <select style="display: inline-block" name="List_Order_Status_Id[]" class="select col-12" multiple>
+                                    @if (List_Order_Status_Id != null)
+                                    {
+                                        <option value="0" @(List_Order_Status_Id != null && List_Order_Status_Id.Contains(0) ? "selected" : "" )>Pending</option>
+                                        <option value="1" @(List_Order_Status_Id != null && List_Order_Status_Id.Contains(1) ? "selected" : "" )>Started</option>
+                                        <option value="2" @(List_Order_Status_Id != null && List_Order_Status_Id.Contains(2) ? "selected" : "" )>Completed</option>
+                                        <option value="3" @(List_Order_Status_Id != null && List_Order_Status_Id.Contains(3) ? "selected" : "" )>Deleted</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="0">Pending</option>
+                                        <option value="1">Started</option>
+                                        <option value="2">Completed</option>
+                                        <option value="3">Deleted</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <label>Start</label>
+                                <input class="form-control" name="date_start" value="@Request["date_start"]" type="date" />
+                            </div>
+                            <div class="col-2">
+                                <label>End</label>
+                                <input class="form-control" name="date_end" value="@Request["date_end"]" type="date" />
+
+                            </div>
+
+                            <div class="ml-auto" style="padding-right: 15px;padding-top: 2rem">
+                                <button type="submit" class="btn btn-success" style="border:none;">
+                                    <i class="fa fa-filter" aria-hidden="true"></i>  <span>Filter</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-12" style="margin-top: 10px">
+                        <input class="form-control" onkeyup="return _search()" id="key_search" placeholder="Search by anything (Example: Order Code: 1, Started, Pending, Customer 1.....)" style="height: 80%;margin-top: 3px" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                @foreach (var item in list_order_orderdetail)
+                {
+                    if (item.Orders != null)
+                    {
+                        <div class="col-12 col-md-12" style="padding-top:25px">
+                            <div class="row all_info">
+                                <div class="col-md-5 col-12">
+                                    <div class="card mb-4" style="border: #ff006e 1px solid;height:100%">
+                                        <div class="card-header py-3 text-center">
+                                            <div class="row">
+                                                <div class="mr-auto" style="padding-left:6px">
+                                                    @if (item.Orders.Order_Status == 0)
+                                                    {
+                                                        <h5 class="mb-0 order_status" id="Order_@item.Orders.Id">Order Code: @item.Orders.Id - Pending</h5>
+                                                    }
+                                                    else if (item.Orders.Order_Status == 1)
+                                                    {
+                                                        <h5 class="mb-0 order_status" id="Order_@item.Orders.Id">Order Code: @item.Orders.Id -  Started</h5>
+                                                    }
+                                                    else if (item.Orders.Order_Status == 2)
+                                                    {
+                                                        <h5 class="mb-0 order_status" id="Order_@item.Orders.Id"> Order Code: @item.Orders.Id -  Completed</h5>
+                                                    }
+                                                    else if (item.Orders.Order_Status == 3)
+                                                    {
+                                                        <h5 class="mb-0 order_status" id="Order_@item.Orders.Id"> Order Code: @item.Orders.Id -  Deleted</h5>
+                                                    }
+
+                                                </div>
+
+                                                <div class="ml-auto">
+                                                    <div class="dropdown" style="padding-left:0px">
+                                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fa fa-ellipsis-v" aria-hidden="true" style="color:black"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                            <div class="btn-group dropdown-item" style="padding:0px;color:white">
+                                                                @if (list_permission.Contains("Order_Reset") || list_role.Contains("Admin"))
+                                                                {
+                                                                    <a onclick="return _ResetOrder(@item.Orders.Id)" style="font-size:11px" class="btn btn-success">
+                                                                        Reset
+                                                                    </a>
+                                                                }
+                                                                @if (list_permission.Contains("Order_Activate") || list_role.Contains("Admin"))
+                                                                {
+                                                                    <a onclick="return _ActivateOrder(@item.Orders.Id)" style="font-size:11px" class="btn btn-primary">
+                                                                        Activate
+                                                                    </a>
+                                                                }
+                                                                @if (list_permission.Contains("Order_Complete") || list_role.Contains("Admin"))
+                                                                {
+                                                                    <a onclick="return _CompleteOrder(@item.Orders.Id)" style="font-size:11px" class="btn btn-info">
+                                                                        Complete
+                                                                    </a>
+                                                                }
+                                                                @if (list_permission.Contains("Order_Delete") || list_role.Contains("Admin"))
+                                                                {
+                                                                    <a onclick="return _DeleteOrder(@item.Orders.Id)" style="font-size:11px" class="btn btn-dark">
+                                                                        Delete
+                                                                    </a>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="card-body" style="padding:5px 15px 25px 15px">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                                    Created Date
+                                                    <span>@item.Orders.Order_DateCreate</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                                    Description
+                                                    <span>@item.Orders.Order_Description</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3" style="border-bottom: 1px solid!important">
+                                                    <div>
+                                                        <strong>Total amount</strong>
+                                                        <strong>
+                                                            <p class="mb-0">(including VAT)</p>
+                                                        </strong>
+                                                    </div>
+                                                    <span><strong>$@item.Orders.Order_TotalCost</strong></span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                                    Customer
+                                                    <span>@item.Orders.Customer.Customer_Name - @item.Orders.Customer.Customer_Phone</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                                    Email
+                                                    <span>@item.Orders.Customer.Customer_Email</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7 col-12" style="padding-left: 0px">
+                                    <div class="card mb-4" style="border: green 1px solid;height:100%">
+                                        <div class="card-header py-3 text-center">
+                                            <h5 class="mb-0">Order Detail - Code </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                @foreach (var ord in item.List_OrderDetail)
+                                                {
+                                                    if (item.List_OrderDetail.Count == 3)
+                                                    {
+                                                        <div class="col-12 col-md-4" style="min-height: 280px">
+                                                            <div class="col-12" style="padding: 0px;min-height: 80px">
+                                                                <h2>@ord.Service.Service_Name - @ord.Id</h2>
+                                                            </div>
+                                                            <div class="col-12" style="padding: 0px">
+                                                                <p style=""><strong>@ord.OrderDetail_DateStart.Value.ToString("dd/MMM/yyyy") - @ord.OrderDetail_DateEnd.Value.ToString("dd/MMM/yyyy")</strong></p>
+                                                                <p>Number employee: @ord.OrderDetail_NumberOfPeople</p>
+                                                                @if (ord.OrderDetail_Status == 0)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Pending</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 1)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Started</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 2)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Completed</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 3)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Deleted</p>
+                                                                }
+
+                                                                <div class="col-12">
+                                                                    <div class="row">
+                                                                        <div class="dropdown" style="padding-left:0px">
+                                                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                <i class="fa fa-ellipsis-v" aria-hidden="true" style="color:black"></i>
+                                                                            </a>
+                                                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                                                <div class="btn-group dropdown-item" style="padding:0px;color:white">
+                                                                                    @if (list_permission.Contains("OrderDetail_Reset") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Reset(@ord.Id)" style="font-size:11px" class="btn btn-success">
+                                                                                            Reset
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Activate") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Activate(@ord.Id)" style="font-size:11px" class="btn btn-primary">
+                                                                                            Activate
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Complete") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Complete(@ord.Id)" style="font-size:11px" class="btn btn-info">
+                                                                                            Complete
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Delete") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Delete(@ord.Id)" style="font-size:11px;color:white" class="btn btn-dark">
+                                                                                            Delete
+                                                                                        </a>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            @if (list_permission.Contains("OrderDetail_Assign") || list_role.Contains("Admin"))
+                                                                            {
+                                                                                if ((DateTime.Now - (DateTime)ord.OrderDetail_DateEnd).TotalDays < 0)
+                                                                                {
+                                                                                    <a href="/Admin/ServiceManagement/Assign_Staff/@ord.Id" target="_blank" style="font-size:11px" class="btn btn-danger">
+                                                                                        Assign
+                                                                                    </a>
+                                                                                }
+
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else if (item.List_OrderDetail.Count == 2)
+                                                    {
+                                                        <div class="col-12 col-md-6">
+                                                            <div class="col-12" style="padding: 0px">
+                                                                <h2>@ord.Service.Service_Name - @ord.Id</h2>
+                                                            </div>
+                                                            <div class="col-12" style="padding: 0px">
+                                                                <p style=""><strong>@ord.OrderDetail_DateStart.Value.ToString("dd/MMM/yyyy") - @ord.OrderDetail_DateEnd.Value.ToString("dd/MMM/yyyy")</strong></p>
+                                                                <p>Number employee: @ord.OrderDetail_NumberOfPeople</p>
+                                                                @if (ord.OrderDetail_Status == 0)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Pending</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 1)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Started</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 2)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Completed</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 3)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Deleted</p>
+                                                                }
+
+
+                                                                <div class="col-12">
+                                                                    <div class="row">
+                                                                        <div class="dropdown" style="padding-left:0px">
+                                                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                <i class="fa fa-ellipsis-v" aria-hidden="true" style="color:black"></i>
+                                                                            </a>
+                                                                            <div class="dropdown-menu dropdown-menu-left dropdown-menu-arrow">
+                                                                                <div class="btn-group dropdown-item" style="padding:0px">
+                                                                                    @if (list_permission.Contains("OrderDetail_Reset") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Reset(@ord.Id)" style="font-size:11px" class="btn btn-success">
+                                                                                            Reset
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Activate") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Activate(@ord.Id)" style="font-size:11px" class="btn btn-primary">
+                                                                                            Activate
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Complete") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Complete(@ord.Id)" style="font-size:11px" class="btn btn-info">
+                                                                                            Complete
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Delete") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Delete(@ord.Id)" style="font-size:11px;color:white" class="btn btn-dark">
+                                                                                            Delete
+                                                                                        </a>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            @if (list_permission.Contains("OrderDetail_Delete") || list_role.Contains("Admin"))
+                                                                            {
+                                                                                if ((DateTime.Now - (DateTime)ord.OrderDetail_DateEnd).TotalDays < 0)
+                                                                                {
+                                                                                    <a href="/Admin/ServiceManagement/Assign_Staff/@ord.Id" target="_blank" style="font-size:11px" class="btn btn-danger">
+                                                                                        Assign
+                                                                                    </a>
+                                                                                }
+
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else if (item.List_OrderDetail.Count == 1)
+                                                    {
+                                                        <div class="col-12 col-md-12">
+                                                            <div class="col-12" style="padding: 0px">
+                                                                <h2>@ord.Service.Service_Name - @ord.Id</h2>
+                                                            </div>
+                                                            <div class="col-12" style="padding: 0px">
+                                                                <p style=""><strong>@ord.OrderDetail_DateStart.Value.ToString("dd/MMM/yyyy") - @ord.OrderDetail_DateEnd.Value.ToString("dd/MMM/yyyy")</strong></p>
+                                                                <p>Number employee: @ord.OrderDetail_NumberOfPeople</p>
+                                                                @if (ord.OrderDetail_Status == 0)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Pending</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 1)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Started</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 2)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Completed</p>
+                                                                }
+                                                                else if (ord.OrderDetail_Status == 3)
+                                                                {
+                                                                    <p class="ord_status" style="font-weight: 600" id="ORD_@ord.Id">Status: Deleted</p>
+                                                                }
+
+
+                                                                <div class="col-12">
+                                                                    <div class="row">
+                                                                        <div class="dropdown" style="padding-left:0px">
+                                                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                <i class="fa fa-ellipsis-v" aria-hidden="true" style="color:black"></i>
+                                                                            </a>
+                                                                            <div class="dropdown-menu dropdown-menu-left dropdown-menu-arrow">
+                                                                                <div class="btn-group dropdown-item" style="padding:0px;color:white">
+                                                                                    @if (list_permission.Contains("OrderDetail_Reset") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Reset(@ord.Id)" style="font-size:11px" class="btn btn-success">
+                                                                                            Reset
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Activate") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Activate(@ord.Id)" style="font-size:11px" class="btn btn-primary">
+                                                                                            Activate
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Complete") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Complete(@ord.Id)" style="font-size:11px" class="btn btn-info">
+                                                                                            Complete
+                                                                                        </a>
+                                                                                    }
+                                                                                    @if (list_permission.Contains("OrderDetail_Delete") || list_role.Contains("Admin"))
+                                                                                    {
+                                                                                        <a onclick="return _Delete(@ord.Id)" style="font-size:11px;color:white" class="btn btn-dark">
+                                                                                            Delete
+                                                                                        </a>
+                                                                                    }
+
+                                                                                </div>
+                                                                            </div>
+                                                                            @if (list_permission.Contains("OrderDetail_Delete") || list_role.Contains("Admin"))
+                                                                            {
+                                                                                if ((DateTime.Now - (DateTime)ord.OrderDetail_DateEnd).TotalDays < 0)
+                                                                                {
+                                                                                    <a href="/Admin/ServiceManagement/Assign_Staff/@ord.Id" target="_blank" style="font-size:11px" class="btn btn-danger">
+                                                                                        Assign
+                                                                                    </a>
+                                                                                }
+
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<button onclick="topFunction()" style="background-color: transparent" id="btn_top" title="Go to top">
+    <img src="~/Public/Image/up-arrow (1).png" width="50" height="50" />
+</button>
+@section css{
+    <link href="~/Areas/Admin/Public/css/panel.css" rel="stylesheet" />
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            color: black !important;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--multiple, .select2-container--default .select2-selection--multiple {
+            height: 40px;
+            min-height: 40px;
+        }
+
+        .selection span {
+            padding-top: 1px !important;
+        }
+
+        .dropdown-menu {
+            padding: 0px !important;
+        }
+
+        .show {
+            top: 5px !important;
+        }
+
+        .order_status {
+            color: blue;
+        }
+
+        .ord_status {
+            color: orangered;
+        }
+    </style>
+}
+
+@section js {
+    <script src="~/Areas/Admin/Script_HuyDuc/Order/ManageOrder.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script>
+        $('select').select2({
+            placeholder: 'Order Status',
+            tokenSeparators: [',', ' '],
+        });
+    </script>
+}
+

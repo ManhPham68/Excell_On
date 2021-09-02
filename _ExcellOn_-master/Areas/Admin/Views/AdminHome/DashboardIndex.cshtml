@@ -1,0 +1,344 @@
+﻿@{ Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml"; }
+@using _ExcellOn_.Models
+@{ List<Staff> list_staff = ViewBag.list_staff;
+    List<Customer> list_customer = ViewBag.list_customer;
+    List<Order> list_order_completed = ViewBag.list_order_completed;
+    List<Order> list_order_started = ViewBag.list_order_started;
+    List<Order> list_order_pending = ViewBag.list_order_pending;
+    List<Staff> list_staff_free = ViewBag.list_staff_free;
+    List<Order> list_order_is_comming_start = ViewBag.list_order_is_comming_start;
+    List<Order> list_order_is_comming_expire = ViewBag.list_order_is_comming_expire;
+
+    int list_staff_count = list_staff.Count;
+    int list_staff_free_count = list_staff_free.Count;
+    int list_staff_in_working_count = ViewBag.list_staff_in_working_count;
+    int list_customer_count = list_customer.Count;
+    int list_order_completed_count = list_order_completed.Count;
+    int list_order_started_count = list_order_started.Count;
+    int list_order_pending_count = list_order_pending.Count;
+    int list_order_count = list_order_started_count + list_order_pending_count + list_order_completed_count;
+    float tunover = 0;
+    foreach (var item in list_order_completed)
+    {
+        tunover += (float)item.Order_TotalCost;
+    }
+    var _tunover = string.Format("{0:0,0}", tunover);
+    float customer_in_order = (float)list_order_completed_count / (float)list_customer_count * 100;
+    float _orderpending_percent = ((float)list_order_pending_count / (float)list_order_count) * 100;
+    float _orderstarted_percent = ((float)list_order_started_count / (float)list_order_count) * 100;
+    float _ordercompleted_percent = ((float)list_order_completed_count / (float)list_order_count) * 100;
+
+    string orderpending_percent = String.Format("{0:0.00}", _orderpending_percent);
+    string orderstarted_percent = String.Format("{0:0.00}", _orderstarted_percent);
+    string ordercompleted_percent = String.Format("{0:0.00}", _ordercompleted_percent);
+    string _customer_in_order = String.Format("{0:0.00}", customer_in_order); }
+
+
+<div class="container" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+    <div class="header-body">
+        <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+                <h6 class="h2 d-inline-block mb-0">Dashboard</h6>
+                <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                    <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+                        <li class="breadcrumb-item"><a href="#">Management</a></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-lg-6 col-5 text-right">
+                <a class="btn btn-sm btn-neutral" href="/Admin/AdminHome/DashboardIndex">Reload</a>
+            </div>
+        </div>
+        <div class="row">         
+            <div class="col-xl-10 col-md-6 _card_ mx-auto" onclick="return _Redirect('/Admin/CustomerManagement/CustomerInOrderIndex')" style="cursor:pointer">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/CustomerManagement/CustomerInOrderIndex"><h5 class="card-title text-uppercase text-muted mb-0">Customer in Order </h5></a>
+                                <span class="h4 mb-0">There was @list_customer_count customer have enjoyed our service </span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                    <i class="ni ni-bold-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-caret-square-o-up"></i> @_customer_in_order%</span>
+                            <span class="text-nowrap">Calculted by Number Order / Number Customer</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-4 col-md-6 _card_" onclick="return _GoToChart_Order_Tunover()" style="cursor:pointer">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title text-uppercase text-muted mb-0">Turnorver</h5>
+                                <span class="h2 font-weight-bold mb-0">$ @_tunover</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                    <i class="ni ni-active-40"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                            <span class="text-nowrap">Excell On Company</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 _card_" style="cursor: pointer" onclick="return _Redirect('/Admin/OrderManagement/Filter2?OrderStatus=2.5')">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/OrderManagement/Filter2?OrderStatus=2.5"><h5 class="card-title text-uppercase text-muted mb-0">Order is comming exprire</h5></a>
+                                <span class="h2 font-weight-bold mb-0">@list_order_is_comming_expire.Count</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                    <i class="ni ni-book-bookmark"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-hand-o-right"></i></span>
+                            <span class="text-nowrap">Excell On Company</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-4 _card_" style="cursor: pointer" onclick="return _Redirect('/Admin/OrderManagement/Filter2?OrderStatus=-1')">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/OrderManagement/Filter2?OrderStatus=-1"><h5 class="card-title text-uppercase text-muted mb-0">Order is comming start</h5></a>
+                                <span class="h2 font-weight-bold mb-0">@list_order_is_comming_start.Count</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                    <i class="ni ni-book-bookmark"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-hand-o-right"></i></span>
+                            <span class="text-nowrap">Excell On Company</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-4 col-md-6 _card_" onclick="return _Redirect('/Admin/OrderManagement/Filter2?OrderStatus=0')" style="cursor:pointer">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/OrderManagement/Filter2?OrderStatus=0"><h5 class="card-title text-uppercase text-muted mb-0">Order Pending</h5></a>
+                                <span class="h2 font-weight-bold mb-0">@list_order_pending_count</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                    <i class="ni ni-money-coins"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-first-order"></i> @orderpending_percent%</span>
+                            <span class="text-nowrap">Excell On Company</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 _card_" onclick="return _Redirect('/Admin/OrderManagement/Filter2?OrderStatus=1')" style="cursor: pointer">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/OrderManagement/Filter2?OrderStatus=1"><h5 class="card-title text-uppercase text-muted mb-0">Order Started</h5></a>
+                                <span class="h2 font-weight-bold mb-0">@list_order_started_count</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                    <i class="ni ni-chart-bar-32"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-caret-square-o-right"></i> @orderstarted_percent %</span>
+                            <span class="text-nowrap">Customer in Order</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 _card_" style="cursor: pointer" onclick="return _Redirect('/Admin/OrderManagement/Filter2?OrderStatus=2')">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/OrderManagement/Filter2?OrderStatus=2"><h5 class="card-title text-uppercase text-muted mb-0">Order Completed</h5></a>
+                                <span class="h2 font-weight-bold mb-0">@list_order_completed_count</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                    <i class="ni ni-book-bookmark"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-hand-o-right"></i> @ordercompleted_percent%</span>
+                            <span class="text-nowrap">Excell On Company</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-4 col-md-6 _card_" style="cursor: pointer" onclick="return _Redirect('/Admin/StaffManagement/StaffInWorkingIndex')">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/StaffManagement/StaffInWorkingIndex"><h5 class="card-title text-uppercase text-muted mb-0">Staff in working</h5></a>
+                                <span class="h2 font-weight-bold mb-0">@list_staff_in_working_count</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                    <i class="ni ni-archive-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-address-card"></i></span>
+                            <span class="text-nowrap">Excell On Company</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 _card_" style="cursor: pointer" onclick="return _Redirect('/Admin/StaffManagement/StaffFreeIndex')">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/StaffManagement/StaffFreeIndex"><h5 class="card-title text-uppercase text-muted mb-0">Free Staff</h5></a>
+                                <span class="h2 font-weight-bold mb-0">@list_staff_free_count</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                    <i class="ni ni-delivery-fast"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-address-book"></i></span>
+                            <span class="text-nowrap">Excell On Company</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 _card_" style="cursor: pointer" onclick="return _Redirect('/Admin/StaffManagement/StaffIndex')">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body card-box-shadow">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/Admin/StaffManagement/StaffIndex"><h5 class="card-title text-uppercase text-muted mb-0">Total of Staff</h5></a>
+                                <span class="h2 font-weight-bold mb-0">@list_staff_count</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                    <i class="ni ni-chart-pie-35"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-sm">
+                            <span class="text-success mr-2"><i class="fa fa-address-card-o"></i></span>
+                            <span class="text-nowrap">Excell On Company</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" style="margin-top: 30px;padding-bottom: 40px">
+    <div class="row">
+        <div class="col-8" style="margin-bottom: 20px">
+            <p class="alert alert-default" style="color:white;font-weight: 600; text-align:center">Turnover Chart is grouped by Date Create and calculated by $</p>
+        </div>
+        <div class="col-4" style="margin-bottom: 20px">
+            <p class="alert alert-default" style="color:white;font-weight: 600; text-align:center">Num of OrderDetail Chart for each Service</p>
+        </div>
+        <div class="col-8" style="margin-bottom: 20px">
+            <select class="form-control">
+                <option value="15" selected> 15 days ago</option>
+                <option value="20"> 20 days ago</option>
+                <option value="30"> 30 days ago</option>
+            </select>
+        </div>
+        <div class="col-4" style="margin-bottom: 20px">
+
+        </div>
+        <div class="col-12 col-md-8">
+            <div class="chart">
+                <!-- Chart wrapper -->
+                <canvas style="border-radius: 10px;box-shadow: rgba(0, 0, 0, 0.24) 6px 12px 20px;" id="Chart_Order_Tunover"></canvas>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="chart">
+                <!-- Chart wrapper -->
+                <canvas style="color:white;border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.24) 6px 12px 20px;padding: 15px" id="Chart_Service_OrderDetail" class="chart-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 50px">
+        <div class="map col-12">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.096966609172!2d105.78049781476331!3d21.028805785998404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab4cd0c66f05%3A0xea31563511af2e54!2zOCBUw7RuIFRo4bqldCBUaHV54bq_dCwgTeG7uSDEkMOsbmgsIEPhuqd1IEdp4bqleSwgSMOgIE7hu5lpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1628831070417!5m2!1svi!2s" height="450" style="border:0;width: 100%" allowfullscreen="" loading="lazy;"></iframe>
+        </div>
+    </div>
+
+</div>
+<button onclick="topFunction()" style="background-color: transparent" id="btn_top" title="Go to top">
+    <img src="~/Public/Image/up-arrow (1).png" width="50" height="50" />
+</button>
+
+@section css{
+    <style>
+        canvas {
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        .card-box-shadow {
+            box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+        }
+
+            .card-box-shadow:hover {
+                box-shadow: none;
+                background-color: antiquewhite;
+            }
+    </style>
+}
+@section js{
+    <script src="~/Areas/Admin/Script_HuyDuc/AdminHome/AdminHome.js"></script>
+}
